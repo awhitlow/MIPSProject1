@@ -1,0 +1,46 @@
+# MIPS Project 1
+# Bare-bones outline of MIPS assembly language program
+
+           .data       
+			#variable to hold user input
+                 	user_input: 
+				.word 4
+			#variable asks user for input
+			ask_input:
+				.asciiz "\Enter up to 8 characters: "
+			#variable to display user input
+			display_input:
+				.asciiz "\You entered: "
+														
+           .text       # instructions follow this line	
+																	
+main: 
+	#load address "ask_input" from memory and store it in register $a0
+	la $a0, ask_input
+	#load 4 (the op code for print string) into register $v0
+	li $v0, 4
+	#read opcode in register $v0, print string located in $a0
+	syscall 
+		
+	#$a0 is set to get user input
+	la $a0, user_input 	
+	#$a1 is used to make sure the memory limit is not surpassed
+	la $a1, user_input
+	#load 8 (the op code for reading user input into $v0)
+	li $v0, 8
+	#read opcode in register $v0, store user input into $a0
+	syscall
+
+	la $a0, Tell_Output #load address Tell_Output from memory and store it into arguement register 0
+	li $v0, 4 #loads the value 4 into register $v0 which is the op code for print string
+	syscall #reads register $v0 for op code, sees 4 and prints the string located in $a0
+
+	la $a0, insert_into #load address insert_into from memory and store it into arguement register 0
+	li $v0, 4 #loads the value 4 into register $v0 which is the op code for print string
+	syscall #reads register $v0 for op code, sees 4 and prints the string located in $a0
+
+	li $v0, 10 #loads op code into $v0 to exit program
+	syscall #reads $v0 and exits program
+
+						
+# End of program, leave a blank line afterwards to make SPIM happy
