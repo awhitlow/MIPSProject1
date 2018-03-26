@@ -40,3 +40,31 @@ addi $s5, $t0, 0
 #Set counter to keep track of number of characters to 0
 add $s3, $zero, $zero 
            ############### 
+#Check for 0 (NULL) or 10 (EOL) in a loop
+LENGTH_OF_INPUT:
+#Load first byte from $s5 to $t1
+lb $t1, 0($s5)
+
+beq $t1, 32, SPACING
+
+#Check if register equals 0, if yes jump to DECREASE_COUNTER
+beq $t1, $zero, DECREASE COUNTER
+# Check if register equals 10, if yes jump to DECREASE_COUNTER
+beq $t1, 10, DECREASE_COUNTER
+#Increase counter by 4
+addi $s3, $s3, 4
+#Increase byte by 1
+addi $s5, $s5, 1
+#Jump to the top of the loop
+j LENGTH_OF_INPUT
+
+######################
+SPACING:
+    addi $s5, $s5, 1
+    j LENGTH_OF_INPUT
+
+#Delete the most recent value included by the counter if the value was NULL or EOL
+DECREASE_COUNTER:
+#Subtract 4 from $s3
+addi $s3,$s3,-4
+##########
