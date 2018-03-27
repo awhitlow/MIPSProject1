@@ -65,6 +65,52 @@ SPACING:
 
 #Delete the most recent value included by the counter if the value was NULL or EOL
 DECREASE_COUNTER:
-#Subtract 4 from $s3
-addi $s3,$s3,-4
+ #Subtract 4 from $s3
+ addi $s3,$s3,-4
 ##########
+#For each Byte, confirm if it is between 0-9, a-f, or A-F
+TEST_VALID_OR_INVALID:
+ #Load the user input into temporary register $t1
+ lb $t1, 0($t0)
+
+ #Test if character is a space
+ beq $t1, 32, INCREASE
+
+ beq $t1, 0, HANDLE_SIGNED
+ beq $t1, 10, HANDLE_SIGNED
+
+
+ #Check if input value is less than ASCII value 0. If yes, go to INVALID_INPUT
+ blt $t1, 48, INVALID_INPUT
+ #Store 48 into $s1 register for use during decimal conversion calculation
+ addi $s1, $0, 48
+
+ #Check if input value is equal to or less than ASCII value for 9. If yes, go to VALID_INPUT
+ blt $t1, 58, VALID_INPUT
+
+ #Check if input value is less than ASCII value for A. If yes, go to INVALID_INPUT 
+ blt $t1, 65, INVALID_INPUT
+ #Store 65 into $s1 register for use during decimal conversion calculation
+ addi $s1, $0, 55
+
+
+ #Check if input value is equal to or less than ASCII value for F. If yes, go to VALID_INPUT
+ blt $t1, 71, VALID_INPUT
+
+ #Check if input value is less than ASCII value a. If yes, go to INVALID_INPUT
+ blt $t1, 97, INVALID_INPUT
+ #Store 97 into $s1 register for use during decimal conversion calculation
+ addi $s1, $0, 87
+
+ #Check if input value is equal to or less than ASCII value for f. If yes, go to VALID_INPUT
+ blt $t1, 103, VALID_INPUT
+
+ bgt $t1, 102, INVALID_INPUT
+
+######################
+INCREASE:
+    addi $t0, $t0, 1
+    j TEST_VALID_OR_INVALID
+    
+##########################
+
