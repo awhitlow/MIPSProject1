@@ -113,4 +113,58 @@ INCREASE:
     j TEST_VALID_OR_INVALID
     
 ##########################
+INVALID_INPUT:
+    #load address for “error" from memory and store it in register $a0
+la $a0, error
+#load 4 (the op code for print string) into register $v0
+li $v0, 4
+#read opcode in register $v0, print string located in $a0
+syscall
+    
+    #Jump to EXIT_PROGRAM
+j EXIT_PROGRAM
+
+###################### 
+VALID_INPUT:
+#Point to the next address
+addi $t0, $t0, 1
+    #Subtract from ASCII Value - Get Decimal Value
+sub $s4, $t1, $s1
+    #Shift left By counter
+Sllv $s4, $s4, $s3
+    #Subtract 4 from counter
+Addi $s3, $s3, -4
+#Add $s4 to your final answer, say $s2
+Add $s2, $s4, $s2
+#If not end of input go to loop of test valid
+bne $t0, $t7, TEST_VALID_OR_INVALID
+
+##############
+HANDLE_SIGNED: 
+addi $s0, $0, 10
+addi $t0, $t0, -1
+lb $t1, 0($t0)
+blt $t1, 58, PRINT_VALUE
+
+divu $s2, $s0
+mflo $a0
+li $v0, 1
+syscall
+
+mfhi $s2
+##############
+
+#############
+PRINT_VALUE:
+La $a0, $s2
+Li $v0, 1
+syscall
+###########
+
+############
+EXIT_PROGRAM:
+li $v0, 10 #loads op code into $v0 to exit program
+syscall #reads $v0 and exits program
+############
+                        
 
